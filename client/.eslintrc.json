@@ -18,6 +18,8 @@
   },
   "plugins": ["react"],
   "rules": {
+    "prettier/prettier": ["error", { "trailingComma": "all" }],
+    "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off"
   }
 }
