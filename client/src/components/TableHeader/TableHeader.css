@@ -1,0 +1,15 @@
+.table-header {
+  padding: 10px 20px;
+  background-color: #f1f4f8;
+}
+
+.shift-date {
+  font-size: 20px;
+  font-weight: bold;
+  color: #4f6c92;
+}
+
+.shift-info {
+  margin-left: 15px;
+  color: #a4b8d3;
+}

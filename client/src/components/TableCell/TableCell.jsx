@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { Button } from "../Button/Button";
-import "./TableCell.jsx";
+import "./TableCell.css";
 
 export const TableCell = ({
   shiftTime,
@@ -15,7 +15,7 @@ export const TableCell = ({
         {shiftArea && <div className="shift-area">{shiftArea}</div>}
       </div>
       <div className="shift-action">
-        <Button btnType="book" />
+        <Button btnType="book" label={"Book"} />
       </div>
     </div>
   );

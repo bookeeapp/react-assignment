@@ -1,0 +1,22 @@
+.table-cell {
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #cbd2e1;
+  background-color: #ffffff;
+}
+
+.shift-details {
+  line-height: 1.25;
+}
+
+.shift-time {
+  font-size: 18px;
+  font-weight: 600;
+  color: #4f6c92;
+}
+
+.shift-area {
+  color: #a4b8d3;
+  font-weight: 600;
+}

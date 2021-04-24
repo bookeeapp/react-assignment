@@ -3,8 +3,8 @@ import "./TableHeader.css";
 
 export const TableHeader = ({ dateText, shiftInfoText }) => (
   <div className="table-header">
-    <span className="date">{dateText}</span>
-    {shiftInfoText && <span className="shiftInfo">{shiftInfoText}</span>}
+    <span className="shift-date">{dateText}</span>
+    {shiftInfoText && <span className="shift-info">{shiftInfoText}</span>}
   </div>
 );
 
