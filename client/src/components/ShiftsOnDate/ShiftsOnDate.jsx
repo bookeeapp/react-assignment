@@ -7,7 +7,7 @@ export const ShiftsOnDate = ({ dateText, dateInfo, shifts, showShiftArea }) => {
   return (
     <div className="shift">
       <TableHeader dateText={dateText} shiftInfoText={dateInfo} />
-      {shifts.map(({ id, area, timing, booked, overlapping }) => (
+      {shifts.map(({ id, area, timing, booked, overlapping, activeOrOver }) => (
         <TableCell
           key={id}
           shiftId={id}
@@ -15,6 +15,7 @@ export const ShiftsOnDate = ({ dateText, dateInfo, shifts, showShiftArea }) => {
           shiftArea={showShiftArea ? area : null}
           isShiftBooked={booked}
           isShiftOverlapping={overlapping}
+          isShiftActive={activeOrOver}
         />
       ))}
     </div>

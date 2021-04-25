@@ -10,6 +10,7 @@ export const TableCell = ({
   shiftArea,
   isShiftBooked,
   isShiftOverlapping,
+  isShiftActive,
 }) => {
   const dispatch = useDispatch();
 
@@ -33,7 +34,7 @@ export const TableCell = ({
           btnType={isShiftBooked ? BTN_TYPES.CANCEL : BTN_TYPES.BOOK}
           shiftId={shiftId}
           onClick={onBtnClick}
-          disabled={isShiftOverlapping}
+          disabled={isShiftOverlapping || isShiftActive}
         />
       </div>
     </div>
@@ -46,6 +47,7 @@ TableCell.propTypes = {
   shiftArea: PropTypes.string,
   isShiftBooked: PropTypes.bool.isRequired,
   isShiftOverlapping: PropTypes.bool.isRequired,
+  isShiftActive: PropTypes.bool.isRequired,
 };
 
 TableCell.defaultProps = {

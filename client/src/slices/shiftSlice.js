@@ -1,4 +1,4 @@
-import { compareAsc, format } from "date-fns";
+import { compareAsc, format, isBefore } from "date-fns";
 import { axios } from "../axios";
 import {
   createSlice,
@@ -45,6 +45,7 @@ export const fetchShifts = createAsyncThunk("shifts/fetchShifts", async () => {
       ...shift,
       timing: `${startTimeText}-${endTimeText}`,
       overlapping: false,
+      activeOrOver: isBefore(startTime, new Date()),
     };
   });
 });
