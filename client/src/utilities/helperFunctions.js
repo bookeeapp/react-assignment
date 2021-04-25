@@ -3,6 +3,7 @@ import {
   format,
   isToday,
   isTomorrow,
+  differenceInMinutes,
   areIntervalsOverlapping,
 } from "date-fns";
 
@@ -12,8 +13,24 @@ const getDateText = (startTime) => {
   return format(startTime, "MMMM do");
 };
 
-export const groupShiftsByDate = (shifts) => {
-  return shifts.reduce((prev, next) => {
+const getTotalShiftsAndTime = (shifts) => {
+  const totalShifts = shifts.length;
+  const totalMins = shifts.reduce(
+    (prev, { startTime, endTime }) =>
+      prev + differenceInMinutes(endTime, startTime),
+    0,
+  );
+
+  const totalHrs = Math.floor(totalMins / 60);
+  const remMins = totalMins - totalHrs * 60;
+
+  return `${totalShifts} ${
+    totalShifts > 1 ? "shifts" : "shift"
+  }, ${totalHrs} h ${remMins > 0 ? `${remMins} m` : ""}`;
+};
+
+export const groupShiftsByDate = (shifts, calcDateInfo = false) => {
+  const groupedShifts = shifts.reduce((prev, next) => {
     const { startTime } = next;
     const dateId = startOfDay(startTime).getTime();
     const shiftDayIndex = prev.findIndex((shiftDay) => shiftDay.id === dateId);
@@ -32,6 +49,17 @@ export const groupShiftsByDate = (shifts) => {
     }
     return prev;
   }, []);
+
+  if (calcDateInfo) {
+    return groupedShifts.map((shiftGroup) => {
+      const { shifts } = shiftGroup;
+      return {
+        ...shiftGroup,
+        dateInfo: getTotalShiftsAndTime(shifts),
+      };
+    });
+  }
+  return groupedShifts;
 };
 
 export const getAreaWiseCount = (shifts) => {

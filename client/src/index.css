@@ -29,6 +29,7 @@ html {
   border-radius: 25px;
   padding: 5px 35px;
   font-weight: 500;
+  min-width: 125px;
 }
 
 .btn:disabled {

@@ -3,15 +3,16 @@ import { TableCell } from "../TableCell/TableCell";
 import PropTypes from "prop-types";
 import "./ShiftsOnDate.css";
 
-export const ShiftsOnDate = ({ dateText, dateInfo, shifts }) => {
+export const ShiftsOnDate = ({ dateText, dateInfo, shifts, showShiftArea }) => {
   return (
     <div className="shift">
       <TableHeader dateText={dateText} shiftInfoText={dateInfo} />
-      {shifts.map(({ id, timing, booked, overlapping }) => (
+      {shifts.map(({ id, area, timing, booked, overlapping }) => (
         <TableCell
           key={id}
           shiftId={id}
           shiftTime={timing}
+          shiftArea={showShiftArea ? area : null}
           isShiftBooked={booked}
           isShiftOverlapping={overlapping}
         />
@@ -23,6 +24,7 @@ export const ShiftsOnDate = ({ dateText, dateInfo, shifts }) => {
 ShiftsOnDate.propTypes = {
   dateText: PropTypes.string.isRequired,
   dateInfo: PropTypes.string,
+  showShiftArea: PropTypes.bool,
   shifts: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -38,4 +40,5 @@ ShiftsOnDate.propTypes = {
 
 ShiftsOnDate.defaultProps = {
   dateInfo: null,
+  showShiftArea: false,
 };

@@ -2,3 +2,16 @@
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
+
+.my-shifts .shift:not(:first-child) .table-header {
+  border-top: 1px solid #cbd2e1;
+}
+
+.no-shifts {
+  border-radius: inherit;
+  background-color: #ffffff;
+  color: #4f6c92;
+  padding: 50px 40px;
+  font-size: 26px;
+  text-align: center;
+}

@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  NavLink,
+} from "react-router-dom";
 import { MyShifts, AvailableShifts } from "./routes";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -10,10 +15,12 @@ function App() {
         <nav>
           <ul>
             <li>
-              <Link to="/">My shifts</Link>
+              <NavLink to="/" exact>
+                My shifts
+              </NavLink>
             </li>
             <li>
-              <Link to="/shifts">Available shifts</Link>
+              <NavLink to="/shifts">Available shifts</NavLink>
             </li>
           </ul>
         </nav>

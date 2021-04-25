@@ -32,6 +32,8 @@ const initialState = shiftsAdapter.getInitialState({
   error: null,
 });
 
+// ** Thunks ** //
+
 export const fetchShifts = createAsyncThunk("shifts/fetchShifts", async () => {
   const response = await axios.get("/shifts");
   return response.data.map((shift) => {
@@ -81,6 +83,8 @@ export const cancelShift = createAsyncThunk(
     }
   },
 );
+
+// ** Thunks ** //
 
 const shiftsSlice = createSlice({
   name: "shifts",
@@ -146,7 +150,7 @@ const selectBookedShifts = createSelector(selectAllShifts, (shifts) =>
 
 export const selectMyShifts = createSelector(
   selectBookedShifts,
-  (bookedShifts) => groupShiftsByDate(bookedShifts),
+  (bookedShifts) => groupShiftsByDate(bookedShifts, true),
 );
 
 export const selectShiftAreas = createSelector(selectAllShifts, (shifts) => {

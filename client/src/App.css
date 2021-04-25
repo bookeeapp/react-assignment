@@ -25,5 +25,13 @@ nav ul li:not(:first-child) {
 }
 
 a {
+  color: #a4b8d3;
+}
+
+a.active {
   color: #004fb4;
+}
+
+a:hover {
+  text-decoration: none;
 }
