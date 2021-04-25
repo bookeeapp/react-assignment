@@ -17,7 +17,7 @@ body,
 html {
   margin: 0;
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
 }
 
 #root {
@@ -57,4 +57,20 @@ html {
 .available-shifts .shift:last-child .table-cell {
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

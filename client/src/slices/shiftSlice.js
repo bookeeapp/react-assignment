@@ -29,6 +29,7 @@ const shiftsAdapter = createEntityAdapter({
 const initialState = shiftsAdapter.getInitialState({
   selectedArea: null, // dynamic filter
   isLoading: false,
+  activeShiftId: null,
   error: null,
 });
 
@@ -91,8 +92,10 @@ const shiftsSlice = createSlice({
   initialState,
   reducers: {
     setSelectedArea: (state, action) => {
-      const { payload: selectedCity } = action;
-      state.selectedArea = selectedCity;
+      state.selectedArea = action.payload;
+    },
+    setActiveShiftId: (state, action) => {
+      state.activeShiftId = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -100,20 +103,23 @@ const shiftsSlice = createSlice({
       .addCase(fetchShifts.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(fetchShifts.rejected, (state, action) => {
-        state.error = action.payload;
+      .addCase(fetchShifts.rejected, (state) => {
+        state.isLoading = false;
+        state.activeShiftId = null;
       })
       .addCase(fetchShifts.fulfilled, (state, action) => {
         shiftsAdapter.setAll(state, action.payload);
         const areas = Object.keys(getAreaWiseCount(action.payload)).sort();
         state.selectedArea = areas[0];
         state.isLoading = false;
+        state.activeShiftId = null;
       })
       .addCase(bookShift.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(bookShift.rejected, (state) => {
         state.isLoading = false;
+        state.activeShiftId = null;
       })
       .addCase(bookShift.fulfilled, (state, action) => {
         const { id } = action.payload;
@@ -121,12 +127,14 @@ const shiftsSlice = createSlice({
         shiftsAdapter.updateOne(state, action.payload);
         shiftsAdapter.updateMany(state, overlappingShifts);
         state.isLoading = false;
+        state.activeShiftId = null;
       })
       .addCase(cancelShift.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(cancelShift.rejected, (state) => {
         state.isLoading = false;
+        state.activeShiftId = null;
       })
       .addCase(cancelShift.fulfilled, (state, action) => {
         const { id } = action.payload;
@@ -134,6 +142,7 @@ const shiftsSlice = createSlice({
         shiftsAdapter.updateOne(state, action.payload);
         shiftsAdapter.updateMany(state, overlappingShifts);
         state.isLoading = false;
+        state.activeShiftId = null;
       });
   },
 });
@@ -169,6 +178,6 @@ export const selectShiftsByArea = createSelector(
 
 // ** Selectors ** //
 
-export const { setSelectedArea } = shiftsSlice.actions;
+export const { setSelectedArea, setActiveShiftId } = shiftsSlice.actions;
 
 export default shiftsSlice.reducer;

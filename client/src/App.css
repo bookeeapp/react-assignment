@@ -1,6 +1,7 @@
 .shift-app {
-  height: 100%;
+  min-height: 100%;
   margin: 20px;
+  z-index: 1;
 }
 
 nav ul {
@@ -16,14 +17,6 @@ nav ul li:not(:first-child) {
   margin-left: 25px;
 }
 
-@media only screen and (min-width: 768px) {
-  .shift-app {
-    width: 740px;
-    margin: auto;
-    padding-top: 40px;
-  }
-}
-
 a {
   color: #a4b8d3;
 }
@@ -34,4 +27,19 @@ a.active {
 
 a:hover {
   text-decoration: none;
+}
+
+@media only screen and (max-width: 576px) {
+  .header .city {
+    text-align: center;
+    line-height: 1;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .shift-app {
+    width: 740px;
+    margin: auto;
+    padding: 40px 0;
+  }
 }

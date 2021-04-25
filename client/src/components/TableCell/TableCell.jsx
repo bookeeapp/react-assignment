@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 import { Button, BTN_TYPES } from "../Button/Button";
-import { bookShift, cancelShift } from "../../slices";
+import { bookShift, cancelShift, setActiveShiftId } from "../../slices";
 import "./TableCell.css";
 
 export const TableCell = ({
@@ -14,6 +14,7 @@ export const TableCell = ({
   const dispatch = useDispatch();
 
   const onBtnClick = () => {
+    dispatch(setActiveShiftId(shiftId));
     if (isShiftBooked) {
       dispatch(cancelShift(shiftId));
     } else {
@@ -30,6 +31,7 @@ export const TableCell = ({
       <div className="shift-action">
         <Button
           btnType={isShiftBooked ? BTN_TYPES.CANCEL : BTN_TYPES.BOOK}
+          shiftId={shiftId}
           onClick={onBtnClick}
           disabled={isShiftOverlapping}
         />

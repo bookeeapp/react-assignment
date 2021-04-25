@@ -5,6 +5,7 @@ export {
   selectShiftsByArea,
   fetchShifts,
   setSelectedArea,
+  setActiveShiftId,
   bookShift,
   cancelShift,
 } from "./shiftSlice";
