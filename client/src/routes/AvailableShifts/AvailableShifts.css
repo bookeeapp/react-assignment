@@ -1,5 +1,5 @@
 .available-shifts .header {
-  color: #004fb4;
+  color: #a4b8d3;
   padding: 15px;
   font-size: 22px;
   font-weight: 600;
@@ -10,6 +10,14 @@
   border-top-right-radius: 10px;
 }
 
-.available-shifts .shift:first-child .table-header {
+.available-shifts .shift .table-header {
   border-top: 1px solid #cbd2e1;
+}
+
+.header .city {
+  cursor: pointer;
+}
+
+.header .city.active {
+  color: #004fb4;
 }

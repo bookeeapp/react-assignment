@@ -27,7 +27,8 @@ html {
 .btn {
   cursor: pointer;
   border-radius: 25px;
-  padding: 5px 15px;
+  padding: 5px 35px;
+  font-weight: 500;
 }
 
 .btn:disabled {

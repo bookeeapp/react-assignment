@@ -9,7 +9,7 @@ export const BTN_TYPES = {
   CANCEL: "cancel",
 };
 
-export const Button = ({ label, btnType, disabled, isLoading, onClick }) => (
+export const Button = ({ btnType, disabled, isLoading, onClick }) => (
   <button
     type="button"
     disabled={disabled}
@@ -27,13 +27,12 @@ export const Button = ({ label, btnType, disabled, isLoading, onClick }) => (
         <RedSpinner />
       )
     ) : (
-      label
+      btnType
     )}
   </button>
 );
 
 Button.propTypes = {
-  label: PropTypes.string.isRequired,
   btnType: PropTypes.oneOf(Object.values(BTN_TYPES)).isRequired,
   disabled: PropTypes.string,
   isLoading: PropTypes.bool,

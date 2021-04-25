@@ -2,6 +2,7 @@
   padding: 15px 20px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   border-top: 1px solid #cbd2e1;
   background-color: #ffffff;
 }

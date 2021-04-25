@@ -1,11 +1,11 @@
 import PropTypes from "prop-types";
-import { Button } from "../Button/Button";
+import { Button, BTN_TYPES } from "../Button/Button";
 import "./TableCell.css";
 
 export const TableCell = ({
   shiftTime,
   shiftArea,
-  // isShiftBooked,
+  isShiftBooked,
   // isShiftOverlapping,
 }) => {
   return (
@@ -15,7 +15,7 @@ export const TableCell = ({
         {shiftArea && <div className="shift-area">{shiftArea}</div>}
       </div>
       <div className="shift-action">
-        <Button btnType="book" label={"Book"} />
+        <Button btnType={isShiftBooked ? BTN_TYPES.CANCEL : BTN_TYPES.BOOK} />
       </div>
     </div>
   );
@@ -24,6 +24,7 @@ export const TableCell = ({
 TableCell.propTypes = {
   shiftTime: PropTypes.string.isRequired,
   shiftArea: PropTypes.string,
+  isShiftBooked: PropTypes.bool.isRequired,
 };
 
 TableCell.defaultProps = {
