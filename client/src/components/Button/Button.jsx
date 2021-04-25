@@ -34,7 +34,7 @@ export const Button = ({ btnType, disabled, isLoading, onClick }) => (
 
 Button.propTypes = {
   btnType: PropTypes.oneOf(Object.values(BTN_TYPES)).isRequired,
-  disabled: PropTypes.string,
+  disabled: PropTypes.bool,
   isLoading: PropTypes.bool,
   className: PropTypes.string,
   onClick: PropTypes.func,

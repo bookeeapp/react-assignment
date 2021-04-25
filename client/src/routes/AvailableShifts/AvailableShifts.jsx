@@ -14,8 +14,6 @@ export const AvailableShifts = () => {
   const selectedArea = useSelector((state) => state.shifts.selectedArea);
   const shiftsInCity = useSelector((state) => selectShiftsByArea(state));
 
-  console.log(shiftsInCity);
-
   const onCitySelection = (city) => {
     dispatch(setSelectedArea(city));
   };

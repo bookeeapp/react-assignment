@@ -1,4 +1,10 @@
-import { startOfDay, format, isToday, isTomorrow } from "date-fns";
+import {
+  startOfDay,
+  format,
+  isToday,
+  isTomorrow,
+  areIntervalsOverlapping,
+} from "date-fns";
 
 const getDateText = (startTime) => {
   if (isToday(startTime)) return "Today";
@@ -35,4 +41,31 @@ export const getAreaWiseCount = (shifts) => {
     prev[area] += 1;
     return prev;
   }, {});
+};
+
+export const getShiftsToUpdate = (shiftId, state, shiftBooked = true) => {
+  const { ids, entities } = state;
+  const { startTime: shiftStartTime, endTime: shiftEndTime } = entities[
+    shiftId
+  ];
+
+  return ids
+    .map((id) => {
+      if (id === shiftId) return null;
+      const { startTime: start, endTime: end } = entities[id];
+      const isShiftOverlapping = areIntervalsOverlapping(
+        { start: shiftStartTime, end: shiftEndTime },
+        { start, end },
+      );
+      if (isShiftOverlapping) {
+        return {
+          id,
+          changes: {
+            overlapping: isShiftOverlapping && shiftBooked,
+          },
+        };
+      }
+      return null;
+    })
+    .filter((shift) => shift);
 };

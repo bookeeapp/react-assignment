@@ -1,5 +1,4 @@
 import { compareAsc, format } from "date-fns";
-import { groupShiftsByDate, getAreaWiseCount } from "../utilities";
 import { axios } from "../axios";
 import {
   createSlice,
@@ -7,6 +6,11 @@ import {
   createSelector,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
+import {
+  groupShiftsByDate,
+  getAreaWiseCount,
+  getShiftsToUpdate,
+} from "../utilities";
 
 const shiftsAdapter = createEntityAdapter({
   sortComparer: (a, b) => {
@@ -37,9 +41,46 @@ export const fetchShifts = createAsyncThunk("shifts/fetchShifts", async () => {
     return {
       ...shift,
       timing: `${startTimeText}-${endTimeText}`,
+      overlapping: false,
     };
   });
 });
+
+export const bookShift = createAsyncThunk(
+  "shifts/bookShift",
+  async (shiftId) => {
+    const response = await axios
+      .post(`/shifts/${shiftId}/book`)
+      .catch((error) => error.request);
+    if (response.status === 200) {
+      const { id, booked } = response.data;
+      return {
+        id,
+        changes: { booked },
+      };
+    } else {
+      return null;
+    }
+  },
+);
+
+export const cancelShift = createAsyncThunk(
+  "shift/cancelShift",
+  async (shiftId) => {
+    const response = await axios
+      .post(`/shifts/${shiftId}/cancel`)
+      .catch((error) => error.request);
+    if (response.status === 200) {
+      const { id, booked } = response.data;
+      return {
+        id,
+        changes: { booked },
+      };
+    } else {
+      return null;
+    }
+  },
+);
 
 const shiftsSlice = createSlice({
   name: "shifts",
@@ -63,9 +104,37 @@ const shiftsSlice = createSlice({
         const areas = Object.keys(getAreaWiseCount(action.payload)).sort();
         state.selectedArea = areas[0];
         state.isLoading = false;
+      })
+      .addCase(bookShift.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(bookShift.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(bookShift.fulfilled, (state, action) => {
+        const { id } = action.payload;
+        const overlappingShifts = getShiftsToUpdate(id, state);
+        shiftsAdapter.updateOne(state, action.payload);
+        shiftsAdapter.updateMany(state, overlappingShifts);
+        state.isLoading = false;
+      })
+      .addCase(cancelShift.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(cancelShift.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(cancelShift.fulfilled, (state, action) => {
+        const { id } = action.payload;
+        const overlappingShifts = getShiftsToUpdate(id, state, false);
+        shiftsAdapter.updateOne(state, action.payload);
+        shiftsAdapter.updateMany(state, overlappingShifts);
+        state.isLoading = false;
       });
   },
 });
+
+// ** Selectors ** //
 
 export const { selectAll: selectAllShifts } = shiftsAdapter.getSelectors(
   (state) => state.shifts,
@@ -93,6 +162,8 @@ export const selectShiftsByArea = createSelector(
     return groupShiftsByDate(filteredShifts);
   },
 );
+
+// ** Selectors ** //
 
 export const { setSelectedArea } = shiftsSlice.actions;
 
