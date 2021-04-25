@@ -3,12 +3,8 @@ import classNames from "classnames";
 import { useSelector } from "react-redux";
 import { ReactComponent as GreenSpinner } from "../../assets/spinner_green.svg";
 import { ReactComponent as RedSpinner } from "../../assets/spinner_red.svg";
+import { BTN_TYPES } from "../../utilities";
 import "./Button.css";
-
-export const BTN_TYPES = {
-  BOOK: "book",
-  CANCEL: "cancel",
-};
 
 export const Button = ({ btnType, disabled, shiftId, onClick }) => {
   const isLoading = useSelector((state) => state.shifts.isLoading);

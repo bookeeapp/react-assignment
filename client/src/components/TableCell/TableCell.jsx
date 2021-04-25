@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
-import { Button, BTN_TYPES } from "../Button/Button";
+import { Button } from "../Button/Button";
 import { bookShift, cancelShift, setActiveShiftId } from "../../slices";
+import { BTN_TYPES } from "../../utilities";
 import "./TableCell.css";
 
 export const TableCell = ({

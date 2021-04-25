@@ -1,4 +1,9 @@
-import { compareAsc, format, isBefore } from "date-fns";
+import {
+  compareAsc,
+  format,
+  isBefore,
+  areIntervalsOverlapping,
+} from "date-fns";
 import { axios } from "../axios";
 import {
   createSlice,
@@ -10,7 +15,10 @@ import {
   groupShiftsByDate,
   getAreaWiseCount,
   getShiftsToUpdate,
+  TOAST_TYPES,
+  TOAST_MSGS,
 } from "../utilities";
+import { addNewToast } from "./toastSlice";
 
 const shiftsAdapter = createEntityAdapter({
   sortComparer: (a, b) => {
@@ -30,58 +38,91 @@ const initialState = shiftsAdapter.getInitialState({
   selectedArea: null, // dynamic filter
   isLoading: false,
   activeShiftId: null,
-  error: null,
 });
+
+const showToast = (title, message, dispatch) => {
+  const toast = {
+    title,
+    message,
+  };
+  setTimeout(() => dispatch(addNewToast(toast)), 100);
+};
 
 // ** Thunks ** //
 
-export const fetchShifts = createAsyncThunk("shifts/fetchShifts", async () => {
-  const response = await axios.get("/shifts");
-  return response.data.map((shift) => {
-    const { startTime, endTime } = shift;
-    const startTimeText = format(startTime, "HH:mm");
-    const endTimeText = format(endTime, "HH:mm");
-    return {
-      ...shift,
-      timing: `${startTimeText}-${endTimeText}`,
-      overlapping: false,
-      activeOrOver: isBefore(startTime, new Date()),
-    };
-  });
-});
+export const fetchShifts = createAsyncThunk(
+  "shifts/fetchShifts",
+  async (_, { dispatch }) => {
+    const response = await axios
+      .get("/shifts")
+      .catch((error) => error.response || error.request);
+    if (response.status === 200) {
+      const allShifts = response.data;
+      const bookedShifts = allShifts.filter((shift) => shift.booked);
+      const overlappingShiftIds = allShifts
+        .filter(({ startTime, endTime, booked }) => {
+          if (booked) return false;
+          return bookedShifts.some(
+            ({ startTime: bookedStTime, endTime: bookedEndTime }) =>
+              areIntervalsOverlapping(
+                { start: bookedStTime, end: bookedEndTime },
+                { start: startTime, end: endTime },
+              ),
+          );
+        })
+        .map((shift) => shift.id);
+
+      return response.data.map((shift) => {
+        const { id, startTime, endTime } = shift;
+        const startTimeText = format(startTime, "HH:mm");
+        const endTimeText = format(endTime, "HH:mm");
+        return {
+          ...shift,
+          timing: `${startTimeText}-${endTimeText}`,
+          overlapping: overlappingShiftIds.includes(id),
+          activeOrOver: isBefore(startTime, new Date()),
+        };
+      });
+    } else {
+      showToast(TOAST_TYPES.ERROR, TOAST_MSGS.FETCH_FAILURE, dispatch);
+    }
+  },
+);
 
 export const bookShift = createAsyncThunk(
   "shifts/bookShift",
-  async (shiftId) => {
+  async (shiftId, { dispatch }) => {
     const response = await axios
       .post(`/shifts/${shiftId}/book`)
-      .catch((error) => error.request);
+      .catch((error) => error.response || error.request);
     if (response.status === 200) {
       const { id, booked } = response.data;
+      showToast(TOAST_TYPES.SUCCESS, TOAST_MSGS.BOOK_SUCCESS, dispatch);
       return {
         id,
         changes: { booked },
       };
     } else {
-      return null;
+      showToast(TOAST_TYPES.ERROR, TOAST_MSGS.BOOK_FAILURE, dispatch);
     }
   },
 );
 
 export const cancelShift = createAsyncThunk(
   "shift/cancelShift",
-  async (shiftId) => {
+  async (shiftId, { dispatch }) => {
     const response = await axios
       .post(`/shifts/${shiftId}/cancel`)
-      .catch((error) => error.request);
+      .catch((error) => error.response || error.request);
     if (response.status === 200) {
       const { id, booked } = response.data;
+      showToast(TOAST_TYPES.INFO, TOAST_MSGS.CANCEL_SUCCESS, dispatch);
       return {
         id,
         changes: { booked },
       };
     } else {
-      return null;
+      showToast(TOAST_TYPES.ERROR, TOAST_MSGS.CANCEL_FAILURE, dispatch);
     }
   },
 );
@@ -108,12 +149,13 @@ const shiftsSlice = createSlice({
         state.isLoading = false;
         state.activeShiftId = null;
       })
-      .addCase(fetchShifts.fulfilled, (state, action) => {
-        shiftsAdapter.setAll(state, action.payload);
-        const areas = Object.keys(getAreaWiseCount(action.payload)).sort();
-        state.selectedArea = areas[0];
+      .addCase(fetchShifts.fulfilled, (state, { payload }) => {
+        if (payload) {
+          shiftsAdapter.setAll(state, payload);
+          const areas = Object.keys(getAreaWiseCount(payload)).sort();
+          state.selectedArea = areas[0];
+        }
         state.isLoading = false;
-        state.activeShiftId = null;
       })
       .addCase(bookShift.pending, (state) => {
         state.isLoading = true;
@@ -122,11 +164,13 @@ const shiftsSlice = createSlice({
         state.isLoading = false;
         state.activeShiftId = null;
       })
-      .addCase(bookShift.fulfilled, (state, action) => {
-        const { id } = action.payload;
-        const overlappingShifts = getShiftsToUpdate(id, state);
-        shiftsAdapter.updateOne(state, action.payload);
-        shiftsAdapter.updateMany(state, overlappingShifts);
+      .addCase(bookShift.fulfilled, (state, { payload }) => {
+        if (payload) {
+          const { id } = payload;
+          const overlappingShifts = getShiftsToUpdate(id, state);
+          shiftsAdapter.updateOne(state, payload);
+          shiftsAdapter.updateMany(state, overlappingShifts);
+        }
         state.isLoading = false;
         state.activeShiftId = null;
       })
@@ -137,11 +181,13 @@ const shiftsSlice = createSlice({
         state.isLoading = false;
         state.activeShiftId = null;
       })
-      .addCase(cancelShift.fulfilled, (state, action) => {
-        const { id } = action.payload;
-        const overlappingShifts = getShiftsToUpdate(id, state, false);
-        shiftsAdapter.updateOne(state, action.payload);
-        shiftsAdapter.updateMany(state, overlappingShifts);
+      .addCase(cancelShift.fulfilled, (state, { payload }) => {
+        if (payload) {
+          const { id } = payload;
+          const overlappingShifts = getShiftsToUpdate(id, state, false);
+          shiftsAdapter.updateOne(state, payload);
+          shiftsAdapter.updateMany(state, overlappingShifts);
+        }
         state.isLoading = false;
         state.activeShiftId = null;
       });
