@@ -38,14 +38,10 @@ Button.propTypes = {
   btnType: PropTypes.oneOf(Object.values(BTN_TYPES)).isRequired,
   shiftId: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
-  isLoading: PropTypes.bool,
-  className: PropTypes.string,
   onClick: PropTypes.func,
 };
 
 Button.defaultProps = {
   disabled: false,
-  isLoading: false,
-  className: "",
   onClick: null,
 };

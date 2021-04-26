@@ -1,8 +1,8 @@
-### React assignment
+# React assignment
 
 ## To Run the APP
 
-# Start API
+### Start API
 
 Requirements:
 
@@ -15,7 +15,7 @@ npm install
 npm start
 ```
 
-# Start clinet
+### Start client
 
 ```bash
 cd client

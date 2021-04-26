@@ -6,7 +6,7 @@ import { RiErrorWarningFill } from "react-icons/ri";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import { IoIosWarning } from "react-icons/io";
 import { selectAllToasts, removeToast } from "../../slices";
-import { TOAST_BACKGROUND_COLORS } from "../../utilities";
+import { TOAST_BACKGROUND_COLORS, TOAST_TYPES } from "../../utilities";
 import PropTypes from "prop-types";
 import "./Toast.css";
 
@@ -39,10 +39,10 @@ export const Toast = ({ position }) => {
               >
                 <button onClick={() => deleteToast(toast.id)}>X</button>
                 <div className="notification-image">
-                  {toast.title === "success" && <FaCheckCircle />}
-                  {toast.title === "error" && <RiErrorWarningFill />}
-                  {toast.title === "info" && <BsFillInfoCircleFill />}
-                  {toast.title === "warning" && <IoIosWarning />}
+                  {toast.title === TOAST_TYPES.SUCCESS && <FaCheckCircle />}
+                  {toast.title === TOAST_TYPES.ERROR && <RiErrorWarningFill />}
+                  {toast.title === TOAST_TYPES.INFO && <BsFillInfoCircleFill />}
+                  {toast.title === TOAST_TYPES.WARNING && <IoIosWarning />}
                 </div>
                 <div>
                   <p className="notification-title">{toast.title}</p>

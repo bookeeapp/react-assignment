@@ -35,6 +35,7 @@ ShiftsOnDate.propTypes = {
       endTime: PropTypes.number.isRequired,
       startTime: PropTypes.number.isRequired,
       timing: PropTypes.string.isRequired,
+      activeOrOver: PropTypes.bool.isRequired,
     }),
   ).isRequired,
 };

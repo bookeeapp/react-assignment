@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import { ShiftsOnDate } from "../../components";
 import { selectMyShifts } from "../../slices/shiftSlice";
-// import PropTypes from "prop-types";
 import "./MyShifts.css";
 
 export const MyShifts = () => {
